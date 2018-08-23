@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2> Email : {{ request.user.email }} </h2>
+<h2> Username : {{ request.user.username }}</h2>
+<h2> Total messages : {{ request.user.total_messages }}</h2>
+<h2> Total thumbs: {{ request.user.total_thumbs }}</h2>
+{% endblock %}

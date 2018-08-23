@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>USER LIST</h1>
+{% endblock %}
+
+{% block content %}
+<section>
+    <table border=1>
+        <thead>
+            <tr>
+                <td> Username </td>
+                <td> Messages </td>
+                <td> Thumbs </td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in post %}
+                <tr onclick="javascript:location='/post/{{ row.id }}'">
+                    <td> {{ row.username }}</td>
+                    <td> {{ row.total_messages }}</td>
+                    <td> {{ row.total_thumbs }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

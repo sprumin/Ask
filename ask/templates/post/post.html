@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<h1>POST</h1>
+<h3>{{ user.username }}'s Ask</h3>
+
+<table border=1>
+    <thead>
+        <td> id </td>
+        <td> Message </td>
+        <td> Comment </td>
+        <td> Update Time </td>
+        <td> thumbs </td>
+    </thead>
+    <tbody>
+        {% for row in post %}
+            {% if row.message %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.message }}</td>
+                {% if row.comment or request.user.email != row.user.email %}
+                    <td> {{ row.comment }} </td>
+                {% else %}
+                    <form method="POST" action="/post/{{ user.id }}/{{ row.id }}">
+                        {% csrf_token %}
+                        <td value="{{ row.id }}"> {{ cmtform.comment }} <button type="submit">left</button> </td>
+                    </form>
+                {% endif %}
+                    <td> {{ row.message_at }} </td>
+                    <td>
+                        {% if request.user.email == user.email %}
+                            <form class='tableform' id="deleteForm" action="/post/{{ user.id }}/{{ row.id }}">
+                                {% csrf_token %}
+                                <button message-id={{ row.id }} type="submit">remove</button>
+                            </form>
+                        {% else %}
+                            <form class='tableform' id="thumbsForm" method="POST" action="/post/{{ user.id }}/{{ row.id }}">
+                                {% csrf_token %}
+                                {{ row.thumbs }} <button message-id={{ row.id }} type="submit">추천</button>
+                            </form>
+                        {% endif %}
+                    </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+<br><br><br>
+<form method="POST">
+    {% csrf_token %}
+    {{ msgform.message }}
+    <button type="submit">ask</button>
+</form>
+<script>
+    $('.tableform').submit(function(event) {
+        event.preventDefault();
+
+        if ($(this).attr('id') === "deleteForm")
+            send_type = 'DELETE'
+        else
+            send_type = 'POST';
+
+        $.ajax({
+            type: send_type,
+            url: $(this).attr('action'),
+            data: {'thumbs': true},
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');  
+            },
+            success: function(data) {
+                location.href = window.location.href;
+            },
+            error: function(error) {
+                alert("Delete Failed");
+            }
+        });
+    });
+</script>
+{% endblock %}
