@@ -1,0 +1,13 @@
+# git ignore file
+
+
+# venv
+venv/
+
+# txt
+*.txt
+
+# database
+
+db.sqlite
+db.sqlite3
